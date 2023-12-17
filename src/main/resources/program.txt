@@ -1,0 +1,17 @@
+section .data
+    array dw 12,15,43,11
+    size dw 4
+section .text
+global main
+main:
+    xor eax, eax
+    mov esi, array
+    mov ecx, [size]
+
+loop_start:
+    add ax, [esi]
+    add esi, 2
+    dec ecx
+    jnz loop_start
+
+    ret
