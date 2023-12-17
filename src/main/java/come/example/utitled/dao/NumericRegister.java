@@ -1,4 +1,4 @@
-package come.example.utitled.emulator.asm.structure.register;
+package come.example.utitled.dao;
 
 public class NumericRegister extends Register<Integer> {
 

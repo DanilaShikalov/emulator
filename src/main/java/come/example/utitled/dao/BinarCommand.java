@@ -1,14 +1,16 @@
-package come.example.utitled.emulator.asm.structure;
+package come.example.utitled.dao;
 
 import come.example.utitled.utils.Operations;
 
-public class UnarCommand extends Command {
+public class BinarCommand extends Command {
 
-    private final String value1;
+    private String value1;
+    private String value2;
 
-    public UnarCommand(Operations operator, String value1, Integer number) {
-        this.operator = operator;
+    public BinarCommand(Operations operations, String value1, String value2, Integer number) {
+        this.operator = operations;
         this.value1 = value1;
+        this.value2 = value2;
         this.number = number;
     }
 
@@ -19,16 +21,16 @@ public class UnarCommand extends Command {
 
     @Override
     public String getSubMainValue() {
-        return null;
+        return value2;
     }
 
     @Override
     public void setMainValue(String command) {
-        // TODO
+        this.value1 = command;
     }
 
     @Override
     public void setSubMainValue(String command) {
-        // TODO
+        this.value2 = command;
     }
 }

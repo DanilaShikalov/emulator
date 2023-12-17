@@ -1,6 +1,4 @@
-package come.example.utitled.emulator.asm.structure.register;
-
-import come.example.utitled.emulator.ArrayReference;
+package come.example.utitled.dao;
 
 import java.util.Objects;
 
@@ -24,8 +22,6 @@ public abstract class Register<T> {
         } else if (!Objects.isNull(full) && Objects.isNull(young)) {
             this.full = full;
             registerType = RegisterType.FULL;
-        } else {
-            throw new RuntimeException("Ошибка добавления регистра в контекст!");
         }
     }
 

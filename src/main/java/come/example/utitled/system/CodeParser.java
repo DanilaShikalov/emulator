@@ -1,10 +1,12 @@
-package come.example.utitled.emulator;
+package come.example.utitled.system;
 
-import come.example.utitled.emulator.asm.structure.BinarCommand;
-import come.example.utitled.emulator.asm.structure.Command;
-import come.example.utitled.emulator.asm.structure.TransitionCommand;
-import come.example.utitled.emulator.asm.structure.UnarCommand;
-import come.example.utitled.syntax.*;
+import come.example.utitled.dao.Array;
+import come.example.utitled.dao.BaseData;
+import come.example.utitled.dao.BinarCommand;
+import come.example.utitled.dao.Command;
+import come.example.utitled.dao.TransitionCommand;
+import come.example.utitled.dao.UnarCommand;
+import come.example.utitled.dao.Number;
 import come.example.utitled.utils.Operations;
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,19 +15,38 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
-import static come.example.utitled.emulator.AssemblerSyntax.*;
+import static come.example.utitled.system.AssemblerSyntax.*;
 
 public class CodeParser {
-    private final AssemblerContext context;
+
+    /**
+     * Контекст программы
+     */
+    private final Context context;
+
+    /**
+     * Счетчик команд
+     */
     private static final AtomicInteger commandCounter = new AtomicInteger(0);
-    private final Pattern arrayPattern = Pattern.compile("(\\w+)\\s+(\\w{2})\\s+(\\d+(?:,\\d+)+)");
+
+    /**
+     * Регулярка для определения массив ли в строке
+     */
+    private final Pattern arrayPattern = Pattern.compile("(\\w+)\\s+(\\w{2})\\s+((-)?\\d+(?:,(-)?\\d+)+)");
+
+    /**
+     * Класс для считывания строк из буфера ввода
+     */
     private final BufferedReader bufferedReader;
 
-    public CodeParser(AssemblerContext context, String fileName) throws FileNotFoundException {
+    public CodeParser(Context context, String fileName) throws FileNotFoundException {
         this.context = context;
-        this.bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(Configuration.PROGRAM_PATH + fileName)));
+        this.bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("src/main/resources/" + fileName)));
     }
 
+    /**
+     * Прочитать следующую не пустую строку
+     */
     private String readNext() throws IOException {
         String line;
         if ((line = bufferedReader.readLine()) != null) {
@@ -36,6 +57,9 @@ public class CodeParser {
         } else return null;
     }
 
+    /**
+     * Парсинг ассемблер кода
+     */
     public void parse() throws IOException {
         var functionName = "";
         Command command = null;
@@ -85,24 +109,27 @@ public class CodeParser {
         }
     }
 
+    /**
+     * Убрать из строки ненужные знаки препинания
+     */
     private Command filterLine(Command command) {
         command.setMainValue(StringUtils.replaceEach(command.getMainValue(), unnecessaryCharacters, voidCharacters));
         command.setSubMainValue(StringUtils.replaceEach(command.getSubMainValue(), unnecessaryCharacters, voidCharacters));
         return command;
     }
 
-    public AsmData readData(String line) {
+    /**
+     * Определение типа данных в блоке инициализации по регулярке
+     * <pre>array1 dw 1,2,3,4,5,6 -> AsmArray</pre>
+     * <pre>size dw 4 -> AsmNumber</pre>
+     */
+    public BaseData readData(String line) {
         var arrayMatcher = arrayPattern.matcher(line);
         var splitArray = line.split(" ");
         if (arrayMatcher.matches()) {
-            return new AsmArray(readType(splitArray[1]), splitArray[0], List.of(splitArray[2].split(",")));
+            return new Array(splitArray[0], List.of(splitArray[2].split(",")));
         } else {
-            return new AsmNumber(readType(splitArray[1]), splitArray[0], splitArray[2]);
+            return new Number(splitArray[0], splitArray[2]);
         }
     }
-
-    private AssemblerType readType(String type) {
-        return AssemblerType.readAsmType(type);
-    }
-
 }

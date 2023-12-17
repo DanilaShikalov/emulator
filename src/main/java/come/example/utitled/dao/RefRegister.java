@@ -1,6 +1,4 @@
-package come.example.utitled.emulator.asm.structure.register;
-
-import come.example.utitled.emulator.ArrayReference;
+package come.example.utitled.dao;
 
 public class RefRegister extends Register<ArrayReference> {
 
@@ -22,7 +20,7 @@ public class RefRegister extends Register<ArrayReference> {
 
     @Override
     void addValue(RegisterType registerType, Object value) {
-        // do nothing
+        // TODO
     }
 
     public int getPosition() {

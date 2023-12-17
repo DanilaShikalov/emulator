@@ -1,4 +1,4 @@
-package come.example.utitled.emulator;
+package come.example.utitled.system;
 
 public class AssemblerSyntax {
     public static final String SECTION = "section";

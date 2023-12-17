@@ -1,4 +1,4 @@
-package come.example.utitled.emulator.asm.structure;
+package come.example.utitled.dao;
 
 import come.example.utitled.utils.Operations;
 
